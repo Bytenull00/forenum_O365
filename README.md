@@ -13,8 +13,6 @@ sudo apt install tor
 
 ### Configuration
 
-This tool uses the common libraries that come natively in Python 3.9.2+, however it requires some additional libraries for aesthetic purposes.
-
 Edit the configuration file
 ```
 sudo nano /etc/tor/torrc
