@@ -4,6 +4,13 @@ This tool allows you to enumerate email accounts in Office 365 by passing a list
 
 The interesting thing about this tool is that we can specify as an input parameter that it changes its IP every certain number of attempts through the TOR network, as well as a timeout between each attempt to avoid blocking.
 
+### Requirements
+
+```
+sudo apt update
+sudo apt install tor
+```
+
 ### Configuration
 
 This tool uses the common libraries that come natively in Python 3.9.2+, however it requires some additional libraries for aesthetic purposes.
