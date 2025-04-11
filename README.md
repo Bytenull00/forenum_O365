@@ -32,8 +32,6 @@ sudo systemctl start tor@default
 
 ### Installation
 
-Installing 
-
 ```
 pip3 install -r requirements.txt
 python3 forenum_O365.py --help
