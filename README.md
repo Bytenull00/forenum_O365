@@ -4,7 +4,7 @@ This tool allows you to enumerate email accounts in Office 365 by passing a list
 
 The interesting thing about this tool is that we can specify as an input parameter that it changes its IP every certain number of attempts through the TOR network, as well as a timeout between each attempt to avoid blocking.
 
-Additionally the tool continues the enumeration from the point where it stopped given that it identifies whether valid users were obtained previously.
+Additionally the tool continues the enumeration from the point where it stopped, given that it identifies whether valid users were obtained previously.
 
 ### Requirements
 
