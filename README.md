@@ -1,6 +1,8 @@
 # forenum_O365
 
-This tool allows you to enumerate email accounts in Office 365 by passing a list of possible usernames and the domain to test.
+This tool allows you to enumerate email accounts in Office 365 by passing a list of possible usernames and the domain to test. The goal is to obtain a list of valid emails for later password spraying.
+
+The interesting thing about this tool is that we can specify as an input parameter that it changes its IP every certain number of attempts through the TOR network, as well as a timeout between each attempt to avoid blocking.
 
 ### Requirements
 
