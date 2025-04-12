@@ -62,11 +62,12 @@ options:
 
 The script queries the GetCredentialType endpoint and displays the results based on the values returned.
 
-Code	Meaning	Technical Description
-0	Valid ->	The email address exists in Microsoft 365.
-1	Invalid ->	The email address does not exist in Microsoft 365.
-5	Federated ->	The domain is federated. Authentication is handled via ADFS or another external identity provider, so Microsoft cannot confirm whether the user exists.
-Other	Unknown ->	An undocumented value was received. The script labels it as "unknown".
+| Code  | Meaning     | Technical Description |
+|-------|-------------|------------------------|
+| `0`   | **Valid**     | The email address exists in Microsoft 365. |
+| `1`   | **Invalid**  | The email address does not exist in Microsoft 365. |
+| `5`   | **Federated** | The domain is federated. Authentication is handled via ADFS or another external identity provider, so Microsoft cannot confirm whether the user exists. |
+| Other | **Unknown** | An undocumented value was received. The script labels it as "unknown". |
 
 # Demo
 
