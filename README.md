@@ -77,7 +77,8 @@ The script queries the GetCredentialType endpoint and displays the results based
 
 ![image](https://github.com/user-attachments/assets/3e4555f4-45ad-4c40-b1a7-ad28da6dda57)
 
-![image](https://github.com/user-attachments/assets/c438b9e1-92b1-40e5-92d8-e8e9d8a37029)
+![image](https://github.com/user-attachments/assets/5ce751b9-d4dd-43b5-9f37-c39e255ccc5d)
+
 
 
 ### Credits 
