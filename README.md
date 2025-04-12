@@ -58,6 +58,17 @@ options:
 
 ```
 
+# Results
+
+```
+Code	Meaning	Technical Description
+0	Valid ->	The email address exists in Microsoft 365.
+1	Invalid ->	The email address does not exist in Microsoft 365.
+5	Federated ->	The domain is federated. Authentication is handled via ADFS or another external identity provider, so Microsoft cannot confirm whether the user exists.
+Other	Unknown ->	An undocumented value was received. The script labels it as "unknown".
+
+```
+
 # Demo
 
 ![image](https://github.com/user-attachments/assets/16ea16f8-b39d-439f-aee4-3dad445810b2)
