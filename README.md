@@ -2,9 +2,9 @@
 
 This tool allows you to enumerate email accounts in Office 365 by passing a list of possible usernames and the domain to test. The goal is to obtain a list of valid emails for later password spraying.
 
-The interesting thing about this tool is that we can specify as an input parameter that it changes its IP every certain number of attempts through the TOR network, as well as a timeout between each attempt to avoid blocking.
+One of the key features of this tool is that it allows IP rotation through the TOR network after a specified number of attempts, as well as a delay between each request to avoid detection or blocking.
 
-Additionally the tool continues the enumeration from the point where it stopped, given that it identifies whether valid users were obtained previously.
+Additionally, the tool resumes enumeration from where it left off by checking previously processed users, ensuring no duplicates are queried.
 
 ### Requirements
 
