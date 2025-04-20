@@ -6,6 +6,11 @@ One of the key features of this tool is that it allows IP rotation through the T
 
 Additionally, the tool resumes enumeration from where it left off by checking previously processed users, ensuring no duplicates are queried.
 
+## Versions
+
+- `v1.0`: Validation using IP rotation with Tor
+- `v1.1`: Now also supports rotation using multiple AWS API Gateways
+
 ### Requirements
 
 ```
@@ -42,19 +47,22 @@ python3 forenum_O365.py --help
 # Usage 
 
 ```
-usage: forenum_O365.py [-h] --domain DOMAIN --rotate ROTATE --delay DELAY [--force] file
+usage: forenum_O365.py [-h] --domain DOMAIN --rotate ROTATE --delay DELAY [--force] [--tor] [--api] [--gateways GATEWAYS] file
 
 Email validator in Microsoft 365
 
 positional arguments:
-  file             File with list of users
+  file                 File with list of users
 
 options:
-  -h, --help       show this help message and exit
-  --domain DOMAIN  Domain
-  --rotate ROTATE  Change IP every N attempts
-  --delay DELAY    Delay between attempts in seconds
-  --force          Ignore previous progress and start from scratch
+  -h, --help           show this help message and exit
+  --domain DOMAIN      Domain
+  --rotate ROTATE      Change IP every N attempts
+  --delay DELAY        Delay between attempts in seconds
+  --force              Ignore previous progress and start from scratch
+  --tor                Use Tor proxy
+  --api                Use AWS API Gateway rotation
+  --gateways GATEWAYS  File with API Gateway endpoints (required if --api)
 
 ```
 
@@ -84,3 +92,4 @@ The script queries the GetCredentialType endpoint and displays the results based
 ### Credits 
 
 * Gustavo Segundo - ByteNull%00 - gasso2do@gmail.com
+* https://www.linkedin.com/in/gustavosegundo/ 
