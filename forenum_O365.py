@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+#coding: utf-8
+# forenum_O365 v1.1 (20_04_2025)
+# By Gustavo Segundo (@Bytenull%00)
+# Please use responsibly...
+# Contact: gasso2do@gmail.com
+# https://www.linkedin.com/in/gustavosegundo/
+
 import requests
 import time
 import argparse
@@ -7,11 +15,12 @@ from datetime import datetime
 from stem import Signal
 from stem.control import Controller
 import os
+import random
+import pyfiglet
 
-proxies = {
-    'http': 'socks5h://127.0.0.1:9050',
-    'https': 'socks5h://127.0.0.1:9050'
-}
+use_tor = False
+use_gateway = False
+proxies = None
 
 def listening(host, port):
     try:
@@ -56,45 +65,88 @@ def change_ip_tor(ip_before):
         print(f"[!] Error changing IP: {e}")
         return ip_before
 
-def validar_getcredentialtype(correo):
-    url = "https://login.microsoftonline.com/common/GetCredentialType"
+def cargar_gateways(nombre_archivo):
+    try:
+        with open(nombre_archivo) as f:
+            lineas = [line.strip() for line in f if line.strip()]
+            if len(lineas) < 2:
+                print(f"[!] The file {nombre_archivo} must contain at least 2 endpoints to allow rotation")
+                sys.exit(1)
+            return lineas
+    except FileNotFoundError:
+        print(f"[!] file not found: {nombre_archivo}")
+        sys.exit(1)
+
+
+def validar_getcredentialtype(correo, ms_url):
     headers = {
         "User-Agent": "Mozilla/5.0",
         "Content-Type": "application/json"
     }
     data = { "Username": correo }
     try:
-        r = requests.post(url, headers=headers, json=data, proxies=proxies, timeout=10)
+        r = requests.post(ms_url, headers=headers, json=data, proxies=proxies, timeout=10)
         resultado = r.json()
         return resultado.get("IfExistsResult", -1)
     except Exception as e:
         print(f"[!] {correo} error GetCredentialType: {e}")
         return -1
 
+
 if __name__ == "__main__":
+    ascii_banner = pyfiglet.figlet_format("forenum_O365")
+    print(ascii_banner)
+    print("                             v1.1")
+    print("            By Gustavo Segundo | gasso2do@gmail.com | @Bytenull%00\n")
     parser = argparse.ArgumentParser(description="Email validator in Microsoft 365")
     parser.add_argument("file", help="File with list of users")
     parser.add_argument("--domain", required=True, help="Domain")
     parser.add_argument("--rotate", required=True, type=int, help="Change IP every N attempts")
     parser.add_argument("--delay", required=True, type=float, help="Delay between attempts in seconds")
     parser.add_argument("--force", action="store_true", help="Ignore previous progress and start from scratch")
+    parser.add_argument("--tor", action="store_true", help="Use Tor proxy")
+    parser.add_argument("--api", action="store_true", help="Use AWS API Gateway rotation")
+    parser.add_argument("--gateways", help="File with API Gateway endpoints (required if --api)")
     args = parser.parse_args()
 
-    progress_file = f"processed_{args.domain.replace('.', '_')}.log"
-    output_file = f"valid_{args.domain.replace('.', '_')}.txt"
-
-    if not verify_tor():
-        print("[-] Tor SOCKS5 proxy not available (127.0.0.1:9050)")
-        sys.exit(1)
-    if not control_tor():
-        print("[-] Tor control unavailable (127.0.0.1:9051)")
+ 
+    if args.tor and args.api:
+        print("[!] You can't use both --tor and --api")
         sys.exit(1)
 
-    ip_current = get_ip_tor()
-    if not ip_current:
-        print("[-] Failed to obtain Tor IP")
-        sys.exit(1)
-    print(f"[*] Current Tor IP: {ip_current}")
+
+    if args.api:
+        if not args.gateways:
+            print("[!] You must provide the gateways file using --gateways if you enable --api")
+            sys.exit(1)
+        gateways = cargar_gateways(args.gateways)
+        if args.rotate > len(gateways):
+            print(f"[!] The value of --rotate {args.rotate} cannot be greater than the number of gateways {len(gateways)}")
+            sys.exit(1)
+        use_gateway = True
+        ms_url = random.choice(gateways)
+        print(f"[*] Rotating gateway: {ms_url}")
+    else:
+        ms_url = "https://login.microsoftonline.com/common/GetCredentialType"
+
+
+    if args.tor:
+        use_tor = True
+        if not verify_tor():
+            print("[-] Tor SOCKS5 proxy not available (127.0.0.1:9050)")
+            sys.exit(1)
+        if not control_tor():
+            print("[-] Tor control unavailable (127.0.0.1:9051)")
+            sys.exit(1)
+        proxies = {
+            'http': 'socks5h://127.0.0.1:9050',
+            'https': 'socks5h://127.0.0.1:9050'
+        }
+        ip_current = get_ip_tor()
+        if not ip_current:
+            print("[-] Failed to obtain Tor IP")
+            sys.exit(1)
+        print(f"[*] Current Tor IP: {ip_current}")
 
     try:
         with open(args.file) as f:
@@ -102,6 +154,9 @@ if __name__ == "__main__":
     except FileNotFoundError:
         print(f"[!] File not found: {args.file}")
         sys.exit(1)
+
+    progress_file = f"processed_{args.domain.replace('.', '_')}.log"
+    output_file = f"valid_{args.domain.replace('.', '_')}.txt"
 
     already_processed = set()
     if args.force:
@@ -128,7 +183,12 @@ if __name__ == "__main__":
 
     try:
         for i, email in enumerate(pending, 1):
-            result = validar_getcredentialtype(email)
+            
+            if args.api and i % args.rotate == 0:
+                ms_url = random.choice(gateways)
+                print(f"[*] Rotating gateway → {ms_url}")
+
+            result = validar_getcredentialtype(email, ms_url)
 
             with open(progress_file, "a") as log:
                 if result == 0:
@@ -150,7 +210,8 @@ if __name__ == "__main__":
 
             time.sleep(args.delay)
 
-            if i % args.rotate == 0:
+            
+            if args.tor and i % args.rotate == 0:
                 ip_current = change_ip_tor(ip_current)
 
     except KeyboardInterrupt:
